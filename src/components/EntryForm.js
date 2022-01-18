@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react"
 
-export const EntryForm = ({ entry, moods, onFormSubmit }) => {
+export const EntryForm = ({ entry, moods, tags, onFormSubmit }) => {
     const [editMode, setEditMode] = useState(false)
     const [updatedEntry, setUpdatedEntry] = useState(entry)
+    const [tagSet, updateTagSet] = useState(new Set())
 
     useEffect(() => {
         setUpdatedEntry(entry)
@@ -14,6 +15,13 @@ export const EntryForm = ({ entry, moods, onFormSubmit }) => {
         }
     }, [entry])
 
+    useEffect(() => {
+        const newEntry = Object.assign({}, updatedEntry)
+        newEntry.tags = Array.from(tagSet)
+        setUpdatedEntry(newEntry)
+
+    }, [tagSet])
+
     const handleControlledInputChange = (event) => {
         /*
             When changing a state object or array, always create a new one
@@ -24,7 +32,15 @@ export const EntryForm = ({ entry, moods, onFormSubmit }) => {
         setUpdatedEntry(newEntry)
     }
 
+    const setTags= (id) => {
+        const copy = new Set(tagSet)
 
+        copy.has(id)
+            ? copy.delete(id)
+            : copy.add(id)
+
+        updateTagSet(copy)
+    }
 
     const constructNewEntry = () => {
         const copyEntry = { ...updatedEntry }
@@ -78,6 +94,23 @@ export const EntryForm = ({ entry, moods, onFormSubmit }) => {
                                         </option>
                                     ))}
                                 </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="field">
+                        <label htmlFor="tags" className="label">Tags: </label>
+                        <div className="control">
+                            <div className="checkbox">
+                                {tags.map(tag => (
+                                    <>
+                                        <input type="checkbox"
+                                            key={tag.id}
+                                            checked={tagSet.has(tag.id) ? true : false}
+                                            onChange={() => setTags(tag.id)}
+                                            />
+                                        <label>{tag.subject}</label>
+                                    </>
+                                ))}
                             </div>
                         </div>
                     </div>
