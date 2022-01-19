@@ -6,7 +6,15 @@ export const EntryForm = ({ entry, moods, tags, onFormSubmit }) => {
     const [tagSet, updateTagSet] = useState(new Set())
 
     useEffect(() => {
-        setUpdatedEntry(entry)
+        setUpdatedEntry({
+            concept: entry.concept,
+            entry: entry.entry,
+            moodId: entry.mood_id,
+            tags: entry.tags,
+            date: entry.date,
+            id: entry.id
+        }
+        )
         if ('id' in entry) {
             setEditMode(true)
         }
@@ -32,7 +40,7 @@ export const EntryForm = ({ entry, moods, tags, onFormSubmit }) => {
         setUpdatedEntry(newEntry)
     }
 
-    const setTags= (id) => {
+    const setTags = (id) => {
         const copy = new Set(tagSet)
 
         copy.has(id)
@@ -84,7 +92,7 @@ export const EntryForm = ({ entry, moods, tags, onFormSubmit }) => {
                             <div className="select">
                                 <select name="moodId"
                                     proptype="int"
-                                    value={updatedEntry.moodId}
+                                    value={parseInt(updatedEntry.moodId)}
                                     onChange={handleControlledInputChange}>
 
                                     <option value="0">Select a mood</option>
@@ -107,7 +115,7 @@ export const EntryForm = ({ entry, moods, tags, onFormSubmit }) => {
                                             key={tag.id}
                                             checked={tagSet.has(tag.id) ? true : false}
                                             onChange={() => setTags(tag.id)}
-                                            />
+                                        />
                                         <label>{tag.subject}</label>
                                     </>
                                 ))}
